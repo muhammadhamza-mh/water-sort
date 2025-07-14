@@ -1,28 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Water Sort Puzzle</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Sort Puzzle</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <div class="game-container">
-    <h1 class="fancy-text">Water Sort Puzzle</h1>
-    <p id="levelIndicator">Level 1</p>
-    <div id="bottlesContainer" class="bottles-container"></div>
-    <button id="resetButton">Reset</button>
-  </div>
+    <div class="top-bar">
+        <div id="levelIndicator">Level 1</div>
+        <span id="coinDisplay">💰 0</span>
 
-  <div id="popupWin">
-    <div class="popup-content">
-      <h2>You Win! </h2>
-      <button id="nextLevelButton">Next Level</button>
     </div>
-  </div>
 
-  <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3" preload="auto"></audio>
+    <div class="game-container">
+        <h1 class="fancy-text">Water Sort Puzzle</h1>
+        <div id="bottlesContainer" class="bottles-container"></div>
+        <button id="resetButton">Reset</button>
+        <button id="hintButton">💡 Hint (-100 Coins)</button>
 
-  <script src="script.js"></script>
+    </div>
+
+    <div id="popupWin" class=" hidden">
+        <div class="popup-content">
+            <h2>You Win!</h2>
+            <p id="scoreDisplay">Score: 0</p>
+            <p id="starDisplay">⭐⭐⭐</p>
+            <p id="rewardDisplay">+200 Coins</p>
+            <button id="nextLevelButton">Next Level</button>
+        </div>
+    </div>
+    <!-- Not Enough Coins Popup -->
+    <div id="popupNoCoins" class="popup hidden">
+        <div class="popup-content">
+            <h2>Oops!</h2>
+            <p>You don't have enough coins.</p>
+            <button onclick="closeNoCoinsPopup()">OK</button>
+        </div>
+    </div>
+
+
+    <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3"
+        preload="auto"></audio>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
