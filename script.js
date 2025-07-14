@@ -4,17 +4,46 @@ const pourSound = document.getElementById("pourSound");
 const levelIndicator = document.getElementById("levelIndicator");
 const popupWin = document.getElementById("popupWin");
 const nextLevelButton = document.getElementById("nextLevelButton");
+const coinsDisplay = document.getElementById("coinDisplay");
+const hintButton = document.getElementById("hintButton");
 
 let bottles = [];
 let selectedBottle = null;
-const MAX_LEVEL = 30;
+let moveCount = 0;
 let currentLevel = 1;
+const MAX_LEVEL = 100;
+
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+updateCoinDisplay();
 
 const COLORS = [
   "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#C74B50",
   "#AD8BFF", "#F38BA0", "#66D3FA", "#FF9F45", "#00C9A7"
 ];
 
+// Utility Functions
+function updateCoinDisplay() {
+  coinsDisplay.textContent = `💰 ${coins}`;
+  localStorage.setItem("coins", coins);
+}
+
+function spendCoins(amount) {
+  if (coins >= amount) {
+    coins -= amount;
+    updateCoinDisplay();
+    return true;
+  } else {
+    showNoCoinsPopup();
+    return false;
+  }
+}
+
+function addCoins(amount) {
+  coins += amount;
+  updateCoinDisplay();
+}
+
+// Shuffle array
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -22,11 +51,20 @@ function shuffle(arr) {
   }
 }
 
+// Level Generator
 function generateLevel(level) {
-  const colorCount = Math.min(2 + Math.floor(level / 2), COLORS.length);
-  const totalBottles = colorCount + 2;
-  const colorPool = [];
+  moveCount = 0;
+  let colorCount, totalBottles;
 
+  if (level <= 3) {
+    colorCount = 2;
+    totalBottles = 3;
+  } else {
+    colorCount = Math.min(10, 2 + Math.floor((level - 1) / 2));
+    totalBottles = colorCount + 2;
+  }
+
+  const colorPool = [];
   for (let i = 0; i < colorCount; i++) {
     for (let j = 0; j < 4; j++) {
       colorPool.push(COLORS[i]);
@@ -49,6 +87,7 @@ function generateLevel(level) {
   saveGameState();
 }
 
+// Render bottles
 function renderBottles() {
   bottlesContainer.innerHTML = "";
 
@@ -123,12 +162,20 @@ function pour(from, to, toIndex) {
     to.push(from.pop());
   }
 
+  moveCount++;
+
   const bottleDiv = bottlesContainer.children[toIndex];
   bottleDiv.classList.add("pouring");
   setTimeout(() => bottleDiv.classList.remove("pouring"), 300);
 
   renderBottles();
   saveGameState();
+}
+
+function calculateStars(moves, optimalMoves) {
+  if (moves <= optimalMoves) return 3;
+  if (moves <= optimalMoves + 4) return 2;
+  return 1;
 }
 
 function checkWin() {
@@ -139,15 +186,24 @@ function checkWin() {
 
   if (allSorted) {
     setTimeout(() => {
+      const optimalMoves = Math.floor(currentLevel * 1.5) + 3;
+      const stars = calculateStars(moveCount, optimalMoves);
+      let reward = stars === 3 ? 200 : stars === 2 ? 100 : 50;
+      addCoins(reward);
+
+      document.getElementById("scoreDisplay").textContent = `Score: ${moveCount}`;
+      document.getElementById("starDisplay").textContent = "★".repeat(stars);
+      document.getElementById("rewardDisplay").textContent = `+${reward} Coins`;
       popupWin.classList.add("show");
-    }, 600);
+    }, 500);
   }
 }
 
 function saveGameState() {
   const gameState = {
     bottles,
-    currentLevel
+    currentLevel,
+    coins
   };
   localStorage.setItem("waterSortGameState", JSON.stringify(gameState));
 }
@@ -158,6 +214,8 @@ function loadGameState() {
     const state = JSON.parse(saved);
     bottles = state.bottles || [];
     currentLevel = state.currentLevel || 1;
+    coins = state.coins || 0;
+    updateCoinDisplay();
     levelIndicator.textContent = `Level ${currentLevel}`;
     renderBottles();
   } else {
@@ -165,6 +223,54 @@ function loadGameState() {
   }
 }
 
+// Hint logic
+hintButton.addEventListener("click", () => {
+  if (!spendCoins(100)) return;
+  const move = findHintMove();
+  if (move) {
+    highlightHint(move.fromIndex, move.toIndex);
+  } else {
+    alert("No possible moves!");
+  }
+});
+
+function findHintMove() {
+  for (let fromIndex = 0; fromIndex < bottles.length; fromIndex++) {
+    for (let toIndex = 0; toIndex < bottles.length; toIndex++) {
+      if (fromIndex === toIndex) continue;
+
+      const from = bottles[fromIndex];
+      const to = bottles[toIndex];
+
+      if (from.length === 0 || to.length >= 4) continue;
+      if (to.length === 0 || from[from.length - 1] === to[to.length - 1]) {
+        return { fromIndex, toIndex };
+      }
+    }
+  }
+  return null;
+}
+
+function highlightHint(fromIndex, toIndex) {
+  const fromEl = bottlesContainer.children[fromIndex];
+  const toEl = bottlesContainer.children[toIndex];
+  fromEl.classList.add("hint");
+  toEl.classList.add("hint");
+  setTimeout(() => {
+    fromEl.classList.remove("hint");
+    toEl.classList.remove("hint");
+  }, 1000);
+}
+
+function showNoCoinsPopup() {
+  document.getElementById("popupNoCoins").classList.remove("hidden");
+}
+
+function closeNoCoinsPopup() {
+  document.getElementById("popupNoCoins").classList.add("hidden");
+}
+
+// Event Listeners
 resetButton.addEventListener("click", () => {
   generateLevel(currentLevel);
 });
@@ -175,7 +281,7 @@ nextLevelButton.addEventListener("click", () => {
     currentLevel++;
     generateLevel(currentLevel);
   } else {
-    alert(" You completed all 30 levels!");
+    alert("You completed all levels!");
   }
 });
 
