@@ -2,50 +2,75 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Water Sort Puzzle</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Water Sort Puzzle</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+
+  <!-- 🏠 Home Screen -->
+  <div id="homeScreen" class="screen">
+    <h1 class="fancy-text">Water Sort Puzzle</h1>
+    <button id="playButton" class="big-button">▶ Play Game</button>
+  </div>
+
+  <!-- 🎯 Level Select Screen -->
+  <div id="levelSelectScreen" class="screen hidden">
+    <h2>Select Level</h2>
+    <div id="levelButtonsContainer" class="level-buttons"></div>
+  </div>
+
+  <!-- 🎮 Game Screen -->
+  <div id="gameScreen" class="hidden">
+    <!-- 🔝 Top Bar -->
     <div class="top-bar">
-        <div id="levelIndicator">Level 1</div>
-        <span id="coinDisplay">💰 0</span>
-
+      <div id="levelIndicator">Level 1</div>
+      <span id="coinDisplay">💰 0</span>
+      <div id="pauseButton" class="pause-btn">⏸</div>
     </div>
 
+    <!-- 🧪 Main Game Container -->
     <div class="game-container">
-        <h1 class="fancy-text">Water Sort Puzzle</h1>
-        <div id="bottlesContainer" class="bottles-container"></div>
-        <button id="resetButton">Reset</button>
-        <button id="hintButton">💡 Hint (-100 Coins)</button>
-
+      <div id="bottlesContainer" class="bottles-container"></div>
+      <button id="resetButton">Reset</button>
+      <button id="hintButton">💡 Hint (-100 Coins)</button>
     </div>
 
-    <div id="popupWin" class=" hidden">
-        <div class="popup-content">
-            <h2>You Win!</h2>
-            <p id="scoreDisplay">Score: 0</p>
-            <p id="starDisplay">⭐⭐⭐</p>
-            <p id="rewardDisplay">+200 Coins</p>
-            <button id="nextLevelButton">Next Level</button>
-        </div>
+    <!-- 🏆 Win Popup -->
+    <div id="popupWin" class="hidden">
+      <div class="popup-content">
+        <h2>You Win!</h2>
+        <p id="scoreDisplay">Score: 0</p>
+        <p id="starDisplay">⭐⭐⭐</p>
+        <p id="rewardDisplay">+200 Coins</p>
+        <button id="nextLevelButton">Next Level</button>
+      </div>
     </div>
-    <!-- Not Enough Coins Popup -->
+
+    <!-- 💸 Not Enough Coins Popup -->
     <div id="popupNoCoins" class="popup hidden">
-        <div class="popup-content">
-            <h2>Oops!</h2>
-            <p>You don't have enough coins.</p>
-            <button onclick="closeNoCoinsPopup()">OK</button>
-        </div>
+      <div class="popup-content">
+        <h2>Oops!</h2>
+        <p>You don't have enough coins.</p>
+        <button onclick="closeNoCoinsPopup()">OK</button>
+      </div>
     </div>
 
+    <!-- ⏸ Pause Menu -->
+    <div id="pauseMenu" class="popup hidden">
+      <h2>Game Paused</h2>
+      <button id="resumeButton">Resume</button>
+      <button id="quitButton">Quit Game</button>
+    </div>
+  </div>
 
-    <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3"
-        preload="auto"></audio>
+  <!-- 🔊 Pour Sound -->
+  <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3" preload="auto"></audio>
 
-    <script src="script.js"></script>
+  <!-- 🧠 Script -->
+  <script src="script.js"></script>
 </body>
 
 </html>
