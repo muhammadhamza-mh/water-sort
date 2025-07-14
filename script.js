@@ -1,11 +1,22 @@
 const bottlesContainer = document.getElementById("bottlesContainer");
 const resetButton = document.getElementById("resetButton");
+const levelSelectScreen = document.getElementById("levelSelectScreen");
+const levelButtonsContainer = document.getElementById("levelButtonsContainer");
 const pourSound = document.getElementById("pourSound");
 const levelIndicator = document.getElementById("levelIndicator");
 const popupWin = document.getElementById("popupWin");
 const nextLevelButton = document.getElementById("nextLevelButton");
 const coinsDisplay = document.getElementById("coinDisplay");
 const hintButton = document.getElementById("hintButton");
+const pauseButton = document.getElementById("pauseButton");
+const pauseMenu = document.getElementById("pauseMenu");
+const resumeButton = document.getElementById("resumeButton");
+const quitButton = document.getElementById("quitButton");
+const homeScreen = document.getElementById("homeScreen");
+const gameScreen = document.getElementById("gameScreen");
+const playButton = document.getElementById("playButton");
+
+let isPaused = false;
 
 let bottles = [];
 let selectedBottle = null;
@@ -17,11 +28,84 @@ let coins = parseInt(localStorage.getItem("coins")) || 0;
 updateCoinDisplay();
 
 const COLORS = [
-  "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#C74B50",
-  "#AD8BFF", "#F38BA0", "#66D3FA", "#FF9F45", "#00C9A7"
+  "#FF6B6B",
+  "#FFD93D",
+  "#6BCB77",
+  "#4D96FF",
+  "#C74B50",
+  "#AD8BFF",
+  "#F38BA0",
+  "#66D3FA",
+  "#FF9F45",
+  "#00C9A7",
 ];
 
 // Utility Functions
+function togglePause() {
+  isPaused = !isPaused;
+  if (isPaused) {
+    pauseMenu.classList.remove("hidden");
+  } else {
+    pauseMenu.classList.add("hidden");
+  }
+}
+
+// Hotkey 'P' to toggle pause
+document.addEventListener("keydown", (e) => {
+  if (e.key === "p" || e.key === "P") {
+    togglePause();
+  }
+});
+
+pauseButton.addEventListener("click", togglePause);
+resumeButton.addEventListener("click", togglePause);
+quitButton.addEventListener("click", () => {
+  popupWin.classList.remove("show");
+  pauseMenu.classList.add("hidden");
+  isPaused = false;
+
+  gameScreen.classList.add("hidden");
+  levelSelectScreen.classList.remove("hidden");
+
+  // 🛠 Refresh level buttons to show new unlocked level
+  renderLevelButtons();
+});
+
+playButton.addEventListener("click", () => {
+  homeScreen.classList.add("hidden");
+  levelSelectScreen.classList.remove("hidden");
+  renderLevelButtons();
+});
+function renderLevelButtons() {
+  const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+  const levelStars = JSON.parse(localStorage.getItem("levelStars") || "{}");
+  levelButtonsContainer.innerHTML = "";
+
+  for (let i = 1; i <= MAX_LEVEL; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+
+    // Add stars as a span
+    const stars = levelStars[i] || 0;
+    const starSpan = document.createElement("span");
+    starSpan.textContent = " " + "★".repeat(stars);
+    btn.appendChild(starSpan);
+
+    if (i <= unlockedLevel) {
+      btn.addEventListener("click", () => {
+        currentLevel = i;
+        levelSelectScreen.classList.add("hidden");
+        gameScreen.classList.remove("hidden");
+        generateLevel(currentLevel);
+      });
+    } else {
+      btn.classList.add("locked");
+    }
+
+    levelButtonsContainer.appendChild(btn);
+  }
+}
+
 function updateCoinDisplay() {
   coinsDisplay.textContent = `💰 ${coins}`;
   localStorage.setItem("coins", coins);
@@ -96,7 +180,7 @@ function renderBottles() {
     bottleDiv.className = "bottle";
     bottleDiv.dataset.index = index;
 
-    bottle.forEach(color => {
+    bottle.forEach((color) => {
       const layer = document.createElement("div");
       layer.className = "layer";
       layer.style.background = color;
@@ -109,6 +193,7 @@ function renderBottles() {
 }
 
 function handleBottleClick(index) {
+  if (isPaused) return;
   const bottleEl = bottlesContainer.children[index];
   bottleEl.classList.add("bounce");
   setTimeout(() => bottleEl.classList.remove("bounce"), 300);
@@ -179,22 +264,45 @@ function calculateStars(moves, optimalMoves) {
 }
 
 function checkWin() {
-  const allSorted = bottles.every(bottle =>
-    bottle.length === 0 ||
-    (bottle.length === 4 && bottle.every(color => color === bottle[0]))
+  const allSorted = bottles.every(
+    (bottle) =>
+      bottle.length === 0 ||
+      (bottle.length === 4 && bottle.every((color) => color === bottle[0]))
   );
 
   if (allSorted) {
     setTimeout(() => {
+      // 🧠 Calculate stars
       const optimalMoves = Math.floor(currentLevel * 1.5) + 3;
       const stars = calculateStars(moveCount, optimalMoves);
+
+      // 💰 Reward based on stars
       let reward = stars === 3 ? 200 : stars === 2 ? 100 : 50;
       addCoins(reward);
 
-      document.getElementById("scoreDisplay").textContent = `Score: ${moveCount}`;
+      // 🎉 Show win popup with results
+      document.getElementById(
+        "scoreDisplay"
+      ).textContent = `Score: ${moveCount}`;
       document.getElementById("starDisplay").textContent = "★".repeat(stars);
       document.getElementById("rewardDisplay").textContent = `+${reward} Coins`;
       popupWin.classList.add("show");
+
+      // 🔓 Unlock next level if needed
+      // 🔓 Unlock next level if needed
+      const unlocked = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+      if (currentLevel >= unlocked && currentLevel < MAX_LEVEL) {
+        localStorage.setItem("unlockedLevel", currentLevel + 1);
+      }
+
+      // ⭐ Save stars (but only if greater than previous)
+      let savedStars = JSON.parse(localStorage.getItem("levelStars") || "{}");
+      const previousStars = savedStars[currentLevel] || 0;
+
+      if (stars > previousStars) {
+        savedStars[currentLevel] = stars;
+        localStorage.setItem("levelStars", JSON.stringify(savedStars));
+      }
     }, 500);
   }
 }
@@ -203,7 +311,7 @@ function saveGameState() {
   const gameState = {
     bottles,
     currentLevel,
-    coins
+    coins,
   };
   localStorage.setItem("waterSortGameState", JSON.stringify(gameState));
 }
@@ -284,5 +392,3 @@ nextLevelButton.addEventListener("click", () => {
     alert("You completed all levels!");
   }
 });
-
-loadGameState();
