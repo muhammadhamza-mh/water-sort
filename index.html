@@ -31,11 +31,22 @@
       <div id="pauseButton" class="pause-btn">⏸</div>
     </div>
 
-    <!-- 🧪 Main Game Container -->
-    <div class="game-container">
-      <div id="bottlesContainer" class="bottles-container"></div>
-      <button id="resetButton">Reset</button>
-      <button id="hintButton">💡 Hint (-100 Coins)</button>
+    <!-- 🧪 Game + Sidebar Layout -->
+    <div class="game-and-sidebar">
+      <!-- Game Area -->
+      <div class="game-container">
+        <div id="bottlesContainer" class="bottles-container"></div>
+        <button id="resetButton">Reset</button>
+      </div>
+      
+      <!-- 🚀 Power-Up Sidebar -->
+      <div id="powerupSidebar" class="powerup-sidebar">
+        <button id="btnAutoMoves" title="Auto 3 moves (-200 coins, max 2)">🤖</button>
+        <button id="btnSkipLevel" title="Skip level (-500 coins)">⏭</button>
+        <button id="hintButton">💡</button>
+        <button id="btnRemoveColor" title="Remove one color (-150 coins)">🎯</button>
+        <button id="btnAddBottle" title="Add empty bottle (x2 per level)">➕</button>
+      </div>
     </div>
 
     <!-- 🏆 Win Popup -->
