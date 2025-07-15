@@ -1,3 +1,9 @@
+// 💥 Power-Up Buttons
+const btnColorEraser = document.getElementById("btnColorEraser");
+const btnAutoMoves = document.getElementById("btnAutoMoves");
+const btnSkipLevel = document.getElementById("btnSkipLevel");
+const btnRemoveColor = document.getElementById("btnRemoveColor");
+const btnAddBottle = document.getElementById("btnAddBottle");
 const bottlesContainer = document.getElementById("bottlesContainer");
 const resetButton = document.getElementById("resetButton");
 const levelSelectScreen = document.getElementById("levelSelectScreen");
@@ -15,7 +21,22 @@ const quitButton = document.getElementById("quitButton");
 const homeScreen = document.getElementById("homeScreen");
 const gameScreen = document.getElementById("gameScreen");
 const playButton = document.getElementById("playButton");
+btnSkipLevel.addEventListener("click", () => {
+  if (spendCoins(500)) {
+    if (currentLevel < MAX_LEVEL) {
+      // Unlock next level if needed
+      const unlocked = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+      if (currentLevel >= unlocked) {
+        localStorage.setItem("unlockedLevel", currentLevel + 1);
+      }
 
+      currentLevel++;
+      generateLevel(currentLevel);
+    } else {
+      alert("You completed all levels!");
+    }
+  }
+});
 let isPaused = false;
 
 let bottles = [];
@@ -138,6 +159,9 @@ function shuffle(arr) {
 // Level Generator
 function generateLevel(level) {
   moveCount = 0;
+  autoMovesUsed = 0;
+  removedColorThisLevel = false;
+  emptyBottlesUsed = 0;
   let colorCount, totalBottles;
 
   if (level <= 3) {
@@ -391,4 +415,67 @@ nextLevelButton.addEventListener("click", () => {
   } else {
     alert("You completed all levels!");
   }
+});
+// Event Listners
+
+// 🧠 Power-up usage tracking per level
+let autoMovesUsed = 0;
+let removedColorThisLevel = false;
+let emptyBottlesUsed = 0;
+
+
+// 🤖 Auto 3 Moves
+btnAutoMoves.addEventListener("click", () => {
+  if (autoMovesUsed >= 2) return alert("Auto-move limit reached!");
+  if (!spendCoins(200)) return;
+
+  let moves = 0;
+  const interval = setInterval(() => {
+    const move = findHintMove();
+    if (!move || moves >= 3) {
+      clearInterval(interval);
+      autoMovesUsed++;
+      return;
+    }
+    pour(bottles[move.fromIndex], bottles[move.toIndex], move.toIndex);
+    moves++;
+  }, 400);
+});
+
+// ⏭ Skip Level
+btnSkipLevel.addEventListener("click", () => {
+  if (!spendCoins(500)) return;
+
+  moveCount = Math.floor(currentLevel * 1.2) + 1;
+  checkWin();
+});
+
+// 🎯 Remove One Random Color
+btnRemoveColor.addEventListener("click", () => {
+  if (removedColorThisLevel) return alert("You already removed a color this level.");
+  if (!spendCoins(150)) return;
+
+  const allColors = new Set();
+  bottles.forEach(b => b.forEach(c => allColors.add(c)));
+  const unique = [...allColors];
+  if (unique.length === 0) return alert("No colors to remove.");
+
+  const randomColor = unique[Math.floor(Math.random() * unique.length)];
+  bottles.forEach((b, i) => {
+    bottles[i] = b.filter(c => c !== randomColor);
+  });
+
+  removedColorThisLevel = true;
+  renderBottles();
+  saveGameState();
+});
+
+// ➕ Add Empty Bottle
+btnAddBottle.addEventListener("click", () => {
+  if (emptyBottlesUsed >= 2) return alert("You can only add 2 empty bottles per level.");
+
+  bottles.push([]);
+  emptyBottlesUsed++;
+  renderBottles();
+  saveGameState();
 });
