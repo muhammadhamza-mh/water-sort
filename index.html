@@ -43,37 +43,41 @@
       <div id="powerupSidebar" class="powerup-sidebar">
         <button id="btnAutoMoves" title="Auto 3 moves (-200 coins, max 2)">🤖</button>
         <button id="btnSkipLevel" title="Skip level (-500 coins)">⏭</button>
-        <button id="hintButton">💡</button>
+        <button id="hintButton" title="Hint (-100 coins)">💡</button>
         <button id="btnRemoveColor" title="Remove one color (-150 coins)">🎯</button>
-        <button id="btnAddBottle" title="Add empty bottle (x2 per level)">➕</button>
+        <button id="btnAddBottle" title="Add empty bottle (x2 per level, -250 coins)">➕</button>
       </div>
     </div>
 
-    <!-- 🏆 Win Popup -->
-    <div id="popupWin" class="hidden">
+    <!-- 🏆 Win Popup (Overlay) -->
+    <div id="popupWin" class="popup hidden">
       <div class="popup-content">
         <h2>You Win!</h2>
         <p id="scoreDisplay">Score: 0</p>
         <p id="starDisplay">⭐⭐⭐</p>
         <p id="rewardDisplay">+200 Coins</p>
-        <button id="nextLevelButton">Next Level</button>
+        <button id="nextLevelButton" class="btn-primary">Next Level</button>
       </div>
     </div>
 
-    <!-- 💸 Not Enough Coins Popup -->
+    <!-- 💸 Not Enough Coins Popup (Overlay) -->
     <div id="popupNoCoins" class="popup hidden">
       <div class="popup-content">
         <h2>Oops!</h2>
         <p>You don't have enough coins.</p>
-        <button onclick="closeNoCoinsPopup()">OK</button>
+        <button class="btn-secondary" onclick="closeNoCoinsPopup()">OK</button>
       </div>
     </div>
 
-    <!-- ⏸ Pause Menu -->
+    <!-- ⏸ Pause Menu (Overlay) -->
     <div id="pauseMenu" class="popup hidden">
-      <h2>Game Paused</h2>
-      <button id="resumeButton">Resume</button>
-      <button id="quitButton">Quit Game</button>
+      <div class="popup-content">
+        <h2>Game Paused</h2>
+        <div class="popup-actions">
+          <button id="resumeButton" class="btn-primary">Resume</button>
+          <button id="quitButton" class="btn-secondary">Quit Game</button>
+        </div>
+      </div>
     </div>
   </div>
 
