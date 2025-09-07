@@ -1,45 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Water Sort Puzzle</title>
+  <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-
-  <!-- 🏠 Home Screen -->
   <div id="homeScreen" class="screen">
     <h1 class="fancy-text">Water Sort Puzzle</h1>
     <button id="playButton" class="big-button">▶ Play Game</button>
   </div>
 
-  <!-- 🎯 Level Select Screen -->
   <div id="levelSelectScreen" class="screen hidden">
     <h2>Select Level</h2>
     <div id="levelButtonsContainer" class="level-buttons"></div>
   </div>
 
-  <!-- 🎮 Game Screen -->
   <div id="gameScreen" class="hidden">
-    <!-- 🔝 Top Bar -->
     <div class="top-bar">
       <div id="levelIndicator">Level 1</div>
       <span id="coinDisplay">💰 0</span>
       <div id="pauseButton" class="pause-btn">⏸</div>
     </div>
 
-    <!-- 🧪 Game + Sidebar Layout -->
     <div class="game-and-sidebar">
-      <!-- Game Area -->
       <div class="game-container">
         <div id="bottlesContainer" class="bottles-container"></div>
         <button id="resetButton">Reset</button>
       </div>
       
-      <!-- 🚀 Power-Up Sidebar -->
       <div id="powerupSidebar" class="powerup-sidebar">
         <button id="btnAutoMoves" title="Auto 3 moves (-200 coins, max 2)">🤖</button>
         <button id="btnSkipLevel" title="Skip level (-500 coins)">⏭</button>
@@ -49,7 +40,6 @@
       </div>
     </div>
 
-    <!-- 🏆 Win Popup (Overlay) -->
     <div id="popupWin" class="popup hidden">
       <div class="popup-content">
         <h2>You Win!</h2>
@@ -60,7 +50,6 @@
       </div>
     </div>
 
-    <!-- 💸 Not Enough Coins Popup (Overlay) -->
     <div id="popupNoCoins" class="popup hidden">
       <div class="popup-content">
         <h2>Oops!</h2>
@@ -69,7 +58,6 @@
       </div>
     </div>
 
-    <!-- ⏸ Pause Menu (Overlay) -->
     <div id="pauseMenu" class="popup hidden">
       <div class="popup-content">
         <h2>Game Paused</h2>
@@ -81,11 +69,7 @@
     </div>
   </div>
 
-  <!-- 🔊 Pour Sound -->
   <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3" preload="auto"></audio>
-
-  <!-- 🧠 Script -->
   <script src="script.js"></script>
 </body>
-
 </html>
