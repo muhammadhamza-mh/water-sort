@@ -1,3 +1,8 @@
+function showInterstitialAd() {
+  startio.interstitial();
+}
+
+
 // 💥 Controls & UI
 const btnAutoMoves = document.getElementById("btnAutoMoves");
 const btnSkipLevel = document.getElementById("btnSkipLevel");
@@ -273,7 +278,7 @@ function pour(from, to) {
   for (let i = 0; i < moved; i++) target.push(source.pop());
 
   // Sound (safe guard for autoplay policies)
-  try { pourSound.currentTime = 0; pourSound.play(); } catch {}
+  try { pourSound.currentTime = 0; pourSound.play(); } catch { }
 
   renderBottles(); // Re-render bottles after pour
   moveCount++;
@@ -300,7 +305,7 @@ function checkWin() {
   addCoins(100 * stars);
   popupWin.classList.add("show");    // .popup + .show => visible center overlay
   lockScroll(true);
-
+  showInterstitialAd();
   // Unlock next level
   const unlocked = parseInt(localStorage.getItem("unlockedLevel")) || 1;
   if (currentLevel === unlocked && currentLevel < MAX_LEVEL) {
@@ -352,9 +357,9 @@ hintButton.addEventListener("click", () => {
     const [from, to] = moves[Math.floor(Math.random() * moves.length)];
     const fromEl = bottlesContainer.querySelector(`[data-index="${from}"]`);
     const toEl = bottlesContainer.querySelector(`[data-index="${to}"]`);
-    
+
     // Clear any existing outlines before showing hint
-    clearBottleOutlines(); 
+    clearBottleOutlines();
 
     fromEl.classList.add("hint"); toEl.classList.add("hint");
     setTimeout(() => { fromEl.classList.remove("hint"); toEl.classList.remove("hint"); }, 1200);
