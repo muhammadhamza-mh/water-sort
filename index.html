@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div id="homeScreen" class="screen">
     <h1 class="fancy-text">Water Sort Puzzle</h1>
@@ -30,7 +32,7 @@
         <div id="bottlesContainer" class="bottles-container"></div>
         <button id="resetButton">Reset</button>
       </div>
-      
+
       <div id="powerupSidebar" class="powerup-sidebar">
         <button id="btnAutoMoves" title="Auto 3 moves (-200 coins, max 2)">🤖</button>
         <button id="btnSkipLevel" title="Skip level (-500 coins)">⏭</button>
@@ -69,7 +71,25 @@
     </div>
   </div>
 
-  <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3" preload="auto"></audio>
+  <audio id="pourSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_73b0e32e74.mp3"
+    preload="auto"></audio>
   <script src="script.js"></script>
+  <!-- Start.io SDK -->
+  <script type="text/javascript" src="https://cdn.startappservice.com/js/startio.js"></script>
+  <script>
+    // Initialize Start.io with your App ID
+    startio.init("208292679");
+  </script>
+
+  <!-- Banner Placement -->
+  <div id="startio-banner" style="position:fixed;bottom:0;width:100%;text-align:center;"></div>
+  <script>
+    startio.banner({
+      container: "startio-banner",
+      format: "banner"
+    });
+  </script>
+
 </body>
+
 </html>
